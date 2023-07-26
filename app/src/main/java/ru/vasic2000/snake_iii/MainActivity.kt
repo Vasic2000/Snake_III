@@ -25,23 +25,42 @@ class MainActivity : AppCompatActivity() {
         val ivArrowRight = findViewById<ImageView>(R.id.ivArrowRight)
         val ivArrowDown = findViewById<ImageView>(R.id.ivArrowDown)
         val ivArrowLeft = findViewById<ImageView>(R.id.ivArrowLeft)
+        val ivPause = findViewById<ImageView>(R.id.ivPause)
 
         ivArrowUp.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.UP, head, container)
             }
+            SnakeCore.isPlay = true
+            ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
         ivArrowRight.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.RIGHT, head, container)
             }
+            SnakeCore.isPlay = true
+            ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
         ivArrowDown.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.DOWN, head, container)
             }
+            SnakeCore.isPlay = true
+            ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
         ivArrowLeft.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.LEFT, head, container)
             }
+            SnakeCore.isPlay = true
+            ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
+
+        ivPause.setOnClickListener {
+            SnakeCore.isPlay = !SnakeCore.isPlay
+            if(SnakeCore.isPlay) {
+                ivPause.setImageResource(R.drawable.baseline_pause_24)
+            } else {
+                ivPause.setImageResource(R.drawable.baseline_play_arrow_24)
+            }
+        }
+
 
         StartTheGame()
 

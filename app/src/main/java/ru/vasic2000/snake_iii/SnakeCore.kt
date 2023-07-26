@@ -4,13 +4,16 @@ class SnakeCore {
     object SnakeCore {
 
         var nextMove: () -> Unit = {}
+        var isPlay = true
 
         fun StartTheGame() {
             Thread(Runnable {
                 while (true) {
                     Thread.sleep(500)
-                    nextMove()
+                    if (isPlay) {
+                        nextMove()
                     }
+                }
             }).start()
         }
     }
