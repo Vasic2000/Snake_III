@@ -1,1 +1,5 @@
-# Snake_III
+Simply android snake game
+Learning project
+
+
+# Snake III
