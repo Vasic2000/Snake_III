@@ -1,5 +1,4 @@
 Simply android snake game
 Learning project
 
-
-# Snake III
+# Snake III :blush:
