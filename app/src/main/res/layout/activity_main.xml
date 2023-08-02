@@ -3,13 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:id="@+id/activity_main"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/container"
+        android:minHeight="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="150dp"
@@ -63,7 +71,6 @@
             app:layout_constraintEnd_toStartOf="@+id/ivArrowRight"
             app:layout_constraintStart_toEndOf="@+id/ivArrowLeft"
             app:layout_constraintTop_toBottomOf="@+id/ivArrowUp" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
