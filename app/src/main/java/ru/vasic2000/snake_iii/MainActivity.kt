@@ -13,6 +13,7 @@ const val HEAD_SIZE = 100
 
 class MainActivity : AppCompatActivity() {
 
+    private val allTable = mutableListOf<PartOfTail>()
     private val human by lazy {
         ImageView(this)
     }
@@ -68,21 +69,60 @@ class MainActivity : AppCompatActivity() {
         }
 
         StartTheGame()
+        generateNewHuman(container)
 
     }
 
-    fun checkIfSnakeEatsPerson(head : View, human : View, container: FrameLayout) {
+    private fun checkIfSnakeEatsPerson(head : View, human : View, container: FrameLayout) {
         if((head.left == human.left) && (head.top == human.top)) {
-            container.removeView(human)
-            generateNewHuman(container)
+             generateNewHuman(container)
+            addPartOfTail(head.top, head.left, container)
         }
+    }
+
+    private fun makeTailMove(headTop: Int, headLeft: Int, container: FrameLayout) {
+        var tempTalePart: PartOfTail? = null
+        for(index in 0 until allTable.size) {
+            val talePart = allTable[index]
+            container.removeView(talePart.imageView)
+            if (index == 0) {
+                tempTalePart = talePart
+                allTable[index] =
+                    PartOfTail(headTop, headLeft, drawPartOfTail(headTop, headLeft, container))
+            } else {
+                var anotherTempPartOfTail = allTable[index]
+                tempTalePart?.let {
+                    allTable[index] =
+                        PartOfTail(it.top, it.left, drawPartOfTail(it.top, it.left, container))
+                }
+                tempTalePart = anotherTempPartOfTail
+            }
+        }
+    }
+
+    private fun addPartOfTail(top: Int, left: Int, container: FrameLayout) {
+        val talePart = drawPartOfTail(top, left, container)
+        allTable.add(PartOfTail(top, left, talePart))
+    }
+
+    private fun drawPartOfTail(top: Int, left: Int, container: FrameLayout): ImageView {
+        val taleImage = ImageView(this)
+        taleImage.setImageResource(R.drawable.circle_tail)
+        taleImage.layoutParams = FrameLayout.LayoutParams(HEAD_SIZE/2, HEAD_SIZE/2)
+        (taleImage.layoutParams as FrameLayout.LayoutParams).topMargin = top + HEAD_SIZE/4;
+        (taleImage.layoutParams as FrameLayout.LayoutParams).leftMargin = left + HEAD_SIZE/4;
+
+        container.addView(taleImage)
+
+        return taleImage
     }
 
     fun generateNewHuman(container: FrameLayout) {
         human.layoutParams = FrameLayout.LayoutParams(HEAD_SIZE, HEAD_SIZE)
         human.setImageResource(R.drawable.baseline_cruelty)
-        (human.layoutParams as FrameLayout.LayoutParams).topMargin = (1..8).random() * HEAD_SIZE
-        (human.layoutParams as FrameLayout.LayoutParams).leftMargin = (1..7).random() * HEAD_SIZE
+        (human.layoutParams as FrameLayout.LayoutParams).topMargin = (0..8).random() * HEAD_SIZE
+        (human.layoutParams as FrameLayout.LayoutParams).leftMargin = (0..7).random() * HEAD_SIZE
+        container.removeView(human)
         container.addView(human)
     }
 
@@ -94,6 +134,7 @@ class MainActivity : AppCompatActivity() {
             Directions.LEFT -> {(head.layoutParams as FrameLayout.LayoutParams).leftMargin -=HEAD_SIZE}
         }
         runOnUiThread {
+            makeTailMove(head.top, head.left, container)
             checkIfSnakeEatsPerson(head, human, container)
             container.removeView(head)
             container.addView(head)
