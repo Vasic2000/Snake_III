@@ -3,13 +3,16 @@ package ru.vasic2000.snake_iii
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import ru.vasic2000.snake_iii.SnakeCore.SnakeCore
 import ru.vasic2000.snake_iii.SnakeCore.SnakeCore.StartTheGame
 
 const val HEAD_SIZE = 100
+const val FIELD_CELLS = 10
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         head.background = ContextCompat.getDrawable(this, R.drawable.circle)
 
         val container = findViewById<FrameLayout>(R.id.container)
+        container.layoutParams = LinearLayout.LayoutParams(HEAD_SIZE * FIELD_CELLS, HEAD_SIZE * FIELD_CELLS)
         container.addView(head)
 
         val ivArrowUp = findViewById<ImageView>(R.id.ivArrowUp)
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkIfSnakeEatsPerson(head : View, human : View, container: FrameLayout) {
         if((head.left == human.left) && (head.top == human.top)) {
-             generateNewHuman(container)
+            generateNewHuman(container)
             addPartOfTail(head.top, head.left, container)
         }
     }
@@ -120,8 +124,8 @@ class MainActivity : AppCompatActivity() {
     fun generateNewHuman(container: FrameLayout) {
         human.layoutParams = FrameLayout.LayoutParams(HEAD_SIZE, HEAD_SIZE)
         human.setImageResource(R.drawable.baseline_cruelty)
-        (human.layoutParams as FrameLayout.LayoutParams).topMargin = (0..8).random() * HEAD_SIZE
-        (human.layoutParams as FrameLayout.LayoutParams).leftMargin = (0..7).random() * HEAD_SIZE
+        (human.layoutParams as FrameLayout.LayoutParams).topMargin = (0 until FIELD_CELLS).random() * HEAD_SIZE
+        (human.layoutParams as FrameLayout.LayoutParams).leftMargin = (0 until FIELD_CELLS).random() * HEAD_SIZE
         container.removeView(human)
         container.addView(human)
     }
