@@ -5,16 +5,23 @@ class SnakeCore {
 
         var nextMove: () -> Unit = {}
         var isPlay = true
+        val gameThread: Thread = Thread {
+            while (true) {
+                Thread.sleep(500)
+                if (isPlay) {
+                    nextMove()
+                }
+            }
+        }
+
+        init{
+            gameThread.start()
+        }
+
 
         fun StartTheGame() {
-            Thread(Runnable {
-                while (true) {
-                    Thread.sleep(500)
-                    if (isPlay) {
-                        nextMove()
-                    }
-                }
-            }).start()
+            isPlay = true
+
         }
     }
 }

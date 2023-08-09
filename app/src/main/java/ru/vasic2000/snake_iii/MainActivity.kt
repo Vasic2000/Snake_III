@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import ru.vasic2000.snake_iii.SnakeCore.SnakeCore
 import ru.vasic2000.snake_iii.SnakeCore.SnakeCore.StartTheGame
+import ru.vasic2000.snake_iii.SnakeCore.SnakeCore.isPlay
 
 const val HEAD_SIZE = 100
 const val FIELD_CELLS = 10
@@ -41,31 +43,31 @@ class MainActivity : AppCompatActivity() {
         ivArrowUp.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.UP, head, container)
             }
-            SnakeCore.isPlay = true
+            isPlay = true
             ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
         ivArrowRight.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.RIGHT, head, container)
             }
-            SnakeCore.isPlay = true
+            isPlay = true
             ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
         ivArrowDown.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.DOWN, head, container)
             }
-            SnakeCore.isPlay = true
+            isPlay = true
             ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
         ivArrowLeft.setOnClickListener {
             SnakeCore.nextMove = {move(Directions.LEFT, head, container)
             }
-            SnakeCore.isPlay = true
+            isPlay = true
             ivPause.setImageResource(R.drawable.baseline_pause_24)
         }
 
         ivPause.setOnClickListener {
-            SnakeCore.isPlay = !SnakeCore.isPlay
-            if(SnakeCore.isPlay) {
+            isPlay = !isPlay
+            if(isPlay) {
                 ivPause.setImageResource(R.drawable.baseline_pause_24)
             } else {
                 ivPause.setImageResource(R.drawable.baseline_play_arrow_24)
@@ -82,6 +84,20 @@ class MainActivity : AppCompatActivity() {
             generateNewHuman(container)
             addPartOfTail(head.top, head.left, container)
         }
+    }
+
+    private fun isSnakeSmash(head : View, container: FrameLayout) : Boolean {
+        for(talePart in allTable) {
+            if(talePart.left == head.left && talePart.top == head.top)
+                return true;
+        }
+        if(head.top < 0 ||
+                head.left < 0 ||
+                head.top >= HEAD_SIZE * FIELD_CELLS ||
+                head.left >= HEAD_SIZE * FIELD_CELLS) {
+            return true
+        }
+        return false;
     }
 
     private fun makeTailMove(headTop: Int, headLeft: Int, container: FrameLayout) {
@@ -138,10 +154,24 @@ class MainActivity : AppCompatActivity() {
             Directions.LEFT -> {(head.layoutParams as FrameLayout.LayoutParams).leftMargin -=HEAD_SIZE}
         }
         runOnUiThread {
+            if(isSnakeSmash(head, container)) {
+                isPlay = false
+                showScore()
+                return@runOnUiThread
+            }
             makeTailMove(head.top, head.left, container)
             checkIfSnakeEatsPerson(head, human, container)
             container.removeView(head)
             container.addView(head)
         }
+    }
+
+    private fun showScore() {
+        AlertDialog.Builder(this)
+            .setTitle("Score: ${allTable.size} points")
+            .setPositiveButton("Ok", {_, _ -> this.recreate()})
+            .setCancelable((false))
+            .create()
+            .show()
     }
 }
